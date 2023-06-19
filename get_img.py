@@ -1,8 +1,10 @@
+import os
 import sys
 import MatterSim
 import math
 import numpy as np
 import cv2
+
 
 WIDTH = 640
 HEIGHT = 480
@@ -10,7 +12,7 @@ VFOV = math.radians(60)
 HFOV = VFOV*WIDTH/HEIGHT
 TEXT_COLOR = [230, 40, 40]
 
-def get_image_each_viewpoint(vid,scanid,viewpointid):
+def get_image_each_viewpoint(vid,scanid,instr_id,viewpointid,mod):
     sim = MatterSim.Simulator()
     # sim.setRenderingEnabled(True)
     sim.setDiscretizedViewingAngles(True)   # Set increment/decrement to 30 degree. (otherwise by radians)
@@ -39,7 +41,15 @@ def get_image_each_viewpoint(vid,scanid,viewpointid):
             fontScale, TEXT_COLOR, thickness=3)
         
     print(rgb.shape)
-    cv2.imwrite(f'{vid}.jpg', rgb)
+    if mod == 'pred':
+        viewdir = './ErrorAnalysis/VLN_Bert/UnseenExample/' + scanid + '/' + instr_id + '/Pred/' + viewpointid
+    elif mod == 'gold':
+        viewdir = './ErrorAnalysis/VLN_Bert/UnseenExample/' + scanid + '/' + instr_id + '/Gold/' + viewpointid
+    else:
+        raise ValueError("mod 必须是pred 或者 gold, 你输入了非法的mod字段")
+    if not os.path.isdir(viewdir):
+        os.makedirs(viewdir)
+    cv2.imwrite(f'{viewdir}/{vid}.jpg', rgb)
 
 
 def get_image_each_viewpoint_1(vid,scanid,viewpointid):
@@ -69,10 +79,14 @@ def get_image_each_viewpoint_1(vid,scanid,viewpointid):
 # print()
 if __name__ == '__main__':
     scanid = sys.argv[1]
-    viewpointid = sys.argv[2]
+    instr_id = sys.argv[2]
+    viewpointid = sys.argv[3]
+    mod = sys.argv[4]
     print(scanid)
+    print(instr_id)
     print(viewpointid)
+    print(mod)
     vidlis = [0,1,2,3,4,5]
     # vidlis = [2.0943951023931953]
     for vid in vidlis:
-        get_image_each_viewpoint(vid, scanid, viewpointid)
+        get_image_each_viewpoint(vid, scanid, instr_id, viewpointid, mod)
