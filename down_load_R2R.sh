@@ -1,0 +1,1 @@
+python3 down_load_R2R.py -o wf_matterport3d --id ALL --type matterport_skybox_images
