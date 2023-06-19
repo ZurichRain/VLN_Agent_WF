@@ -34,49 +34,26 @@ error360EnvPath = './ErrorAnalysis/VLN_Bert/UnseenExample'
 
 # print(len(error_predict_sample))
 # exit()
-for sample in error_predict_sample[:5]:
+for sample in error_predict_sample:
     # if len(sample['trajectory']) != len(sample['trajectory_true']):
     #     continue
-    print(sample['instr_id'])
-    print(sample['scan_id'])
-    scan_path = error360EnvPath+'/'+ sample['scan_id']
-    if not os.path.isdir(scan_path):
-        os.makedirs(scan_path)
-        # os.makedirs(scan_path+'/Pred')
-        # os.makedirs(scan_path+'/Gold')
+    if sample['scan_id'] == 'zsNo4HB9uLZ' and sample['instr_id'] == '4909_0':
 
-    if not os.path.isdir(scan_path+'/'+sample['instr_id']):
-        os.makedirs(scan_path+'/'+sample['instr_id'])
-        os.makedirs(scan_path+'/'+sample['instr_id']+'/Pred')
-        for viewpoint in sample['trajectory']:
-            if not os.path.isdir(scan_path+'/'+sample['instr_id']+'/Pred/'+viewpoint[0]):
-                os.makedirs(scan_path+'/'+sample['instr_id']+'/Pred/'+viewpoint[0])
-                
-        os.makedirs(scan_path+'/'+sample['instr_id']+'/Gold')
-        for viewpoint in sample['trajectory_true']:
-            if not os.path.isdir(scan_path+'/'+sample['instr_id']+'/Gold/'+viewpoint):
-                os.makedirs(scan_path+'/'+sample['instr_id']+'/Gold/'+viewpoint)
-                
-    MetaFile = scan_path+'/'+sample['instr_id']+'/meta.json'
-    with open(MetaFile,'w') as f:
-        f.write(json.dumps(sample,ensure_ascii=False))
-    for viewpoint in sample['trajectory']:
-        status = os.system(f"bash ./get_one_scan_path_360images.sh {sample['scan_id']} \
-                                    {sample['instr_id']} {viewpoint[0]} pred")
-    for viewpoint in sample['trajectory_true']:
-        status = os.system(f"bash ./get_one_scan_path_360images.sh {sample['scan_id']} \
-                                   {sample['instr_id']} {viewpoint} gold")
-    # exit()
-    print(len(sample['trajectory']),' : ',len(sample['trajectory_true']))
-    print()
-    if len(sample['trajectory']) == len(sample['trajectory_true']):
+        print(sample['instr_id'])
+        print(sample['scan_id'])
+        # exit()
         print(sample['insturction'])
-        for idx in range(len(sample['trajectory'])):
-            print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
-    else:
-        for idx in range(min(len(sample['trajectory']),len(sample['trajectory_true']))):
-            print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
-    print()
+        print(len(sample['trajectory']),' : ',len(sample['trajectory_true']))
+        print()
+        if len(sample['trajectory']) == len(sample['trajectory_true']):
+            
+            for idx in range(len(sample['trajectory'])):
+                print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
+        else:
+            for idx in range(min(len(sample['trajectory']),len(sample['trajectory_true']))):
+                print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
+        print()
+        break
 # with open('/home/zhhz/sxu/fw_project/VLN_bert/result/wf_test_predict_path.json','r') as f:
 #     predict_sample = json.load(f)
 

@@ -42,7 +42,7 @@ class BaseAgent(object):
 
     def get_results(self):
         output = [{'instr_id': k, 'trajectory': v[0], 'trajectory_true': v[2], 'insturction': v[1], \
-                   'decisions' : v[3], 'scan_id': v[4] } for k, v in self.results.items()]
+                   'decisions' : v[3], 'scan_id': v[4], 'gold_heading_lis': v[5]} for k, v in self.results.items()]
         return output
 
     def rollout(self, **args):
@@ -75,7 +75,9 @@ class BaseAgent(object):
                     else:
                         self.loss = 0
                         # self.results[traj['instr_id']] = traj['path']
-                        self.results[traj['instr_id']] = [traj['path'],traj['instruction'],traj['gt_path'],traj['decisions'],traj['scan_id']]
+                        self.results[traj['instr_id']] = [traj['path'],traj['instruction'],\
+                                                          traj['gt_path'],traj['decisions'],\
+                                                        traj['scan_id'], traj['gold_heading_lis']]
                 if looped:
                     break
 
@@ -171,7 +173,7 @@ class Seq2SeqAgent(BaseAgent):
 
         return input_a_t, candidate_feat, candidate_leng
 
-    def _teacher_action(self, obs, ended):
+    def _teacher_action(self, obs, ended, traj=None):
         """
         Extract teacher actions into variable.
         :param obs: The observation.
@@ -186,10 +188,15 @@ class Seq2SeqAgent(BaseAgent):
                 for k, candidate in enumerate(ob['candidate']):
                     if candidate['viewpointId'] == ob['teacher']:   # Next view point
                         a[i] = k
+                        cur_heading = candidate['heading']
                         break
                 else:   # Stop here
                     assert ob['teacher'] == ob['viewpoint']         # The teacher action should be "STAY HERE"
+                    cur_heading = candidate['heading']
                     a[i] = len(ob['candidate'])
+
+            if traj is not None:
+                traj[i]['gold_heading_lis'].append(cur_heading)
         return torch.from_numpy(a).cuda()
 
     def make_equiv_action(self, a_t, perm_obs, perm_idx=None, traj=None):
@@ -279,7 +286,8 @@ class Seq2SeqAgent(BaseAgent):
             'instruction': ob['instructions'],
             'gt_path' : ob['gt_path'],
             'path': [(ob['viewpoint'], ob['heading'], ob['elevation'])],
-            'decisions' : []
+            'decisions' : [],
+            'gold_heading_lis' : [ob['heading']]
         } for ob in perm_obs]
 
         # Init the reward shaping
@@ -333,7 +341,7 @@ class Seq2SeqAgent(BaseAgent):
             logit.masked_fill_(candidate_mask, -float('inf'))
 
             # Supervised training
-            target = self._teacher_action(perm_obs, ended)
+            target = self._teacher_action(perm_obs, ended, traj)
             ml_loss += self.criterion(logit, target)
 
             # Determine next model inputs

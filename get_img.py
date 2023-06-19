@@ -30,7 +30,7 @@ def get_image_each_viewpoint(vid,scanid,instr_id,viewpointid,mod):
     # sim.makeAction([0], [0], [0])
     state = sim.getState()[0]
     locations = state.navigableLocations
-    print(locations)
+    # print(locations)
     rgb = np.array(state.rgb, copy=False)
     for idx, loc in enumerate(locations[1:]):
         # Draw actions on the screen
@@ -40,16 +40,22 @@ def get_image_each_viewpoint(vid,scanid,instr_id,viewpointid,mod):
         cv2.putText(rgb, str(idx + 1), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 
             fontScale, TEXT_COLOR, thickness=3)
         
-    print(rgb.shape)
+    # print(rgb.shape)
     if mod == 'pred':
         viewdir = './ErrorAnalysis/VLN_Bert/UnseenExample/' + scanid + '/' + instr_id + '/Pred/' + viewpointid
     elif mod == 'gold':
         viewdir = './ErrorAnalysis/VLN_Bert/UnseenExample/' + scanid + '/' + instr_id + '/Gold/' + viewpointid
     else:
-        raise ValueError("mod 必须是pred 或者 gold, 你输入了非法的mod字段")
+        raise ValueError("mod 必须是 pred 或者 gold, 你输入了非法的mod字段")
+
     if not os.path.isdir(viewdir):
         os.makedirs(viewdir)
-    cv2.imwrite(f'{viewdir}/{vid}.jpg', rgb)
+    if vid<0:
+        cv2.imwrite(f'{viewdir}/_{abs(vid)}.jpg', rgb)
+    else:
+        cv2.imwrite(f'{viewdir}/{vid}.jpg', rgb)
+    return rgb
+    
 
 
 def get_image_each_viewpoint_1(vid,scanid,viewpointid):
@@ -86,7 +92,28 @@ if __name__ == '__main__':
     print(instr_id)
     print(viewpointid)
     print(mod)
-    vidlis = [0,1,2,3,4,5]
+    # vidlis = [0,1,2,3,4,5]
+    vidlis = eval(sys.argv[5])
+    # print(vidlis)
+    is_stand_heading = sys.argv[6] == 'stand_heading'
     # vidlis = [2.0943951023931953]
+    viewlis = []
+    if len(vidlis)>=2 and vidlis[1]==',':
+        vidlis = [int(vid) for vid in vidlis.split(',')]
     for vid in vidlis:
-        get_image_each_viewpoint(vid, scanid, instr_id, viewpointid, mod)
+        curview=get_image_each_viewpoint(vid, scanid, instr_id, viewpointid, mod)
+        viewlis.append(curview)
+        if vid != vidlis[-1]:
+            viewlis.append(np.zeros((curview.shape[0],20,curview.shape[2])))
+
+    if is_stand_heading:
+        if mod == 'pred':
+            viewdir = './ErrorAnalysis/VLN_Bert/UnseenExample/' + scanid + '/' + instr_id + '/Pred/' + viewpointid
+        elif mod == 'gold':
+            viewdir = './ErrorAnalysis/VLN_Bert/UnseenExample/' + scanid + '/' + instr_id + '/Gold/' + viewpointid
+        else:
+            raise ValueError("mod 必须是 pred 或者 gold, 你输入了非法的mod字段")
+
+        if not os.path.isdir(viewdir):
+            os.makedirs(viewdir)
+        cv2.imwrite(f'{viewdir}/overview.jpg', np.hstack(viewlis))

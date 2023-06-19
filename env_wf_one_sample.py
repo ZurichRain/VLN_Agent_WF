@@ -286,7 +286,7 @@ class R2RBatch():
                 {key: c[key]
                  for key in
                     ['normalized_heading', 'elevation', 'scanId', 'viewpointId',
-                     'pointId', 'idx']}
+                     'pointId', 'idx', 'heading']}
                 for c in candidate
             ]
             return candidate
