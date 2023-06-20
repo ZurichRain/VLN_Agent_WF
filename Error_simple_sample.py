@@ -34,26 +34,42 @@ error360EnvPath = './ErrorAnalysis/VLN_Bert/UnseenExample'
 
 # print(len(error_predict_sample))
 # exit()
-for sample in error_predict_sample:
+for sample in error_predict_sample[20:30]:
     # if len(sample['trajectory']) != len(sample['trajectory_true']):
     #     continue
-    if sample['scan_id'] == 'zsNo4HB9uLZ' and sample['instr_id'] == '4909_0':
+    # if sample['scan_id'] == '2azQ1b91cZZ' and sample['instr_id'] == '6822_2':
 
-        print(sample['instr_id'])
-        print(sample['scan_id'])
-        # exit()
-        print(sample['insturction'])
-        print(len(sample['trajectory']),' : ',len(sample['trajectory_true']))
-        print()
-        if len(sample['trajectory']) == len(sample['trajectory_true']):
+    #     print(sample['instr_id'])
+    #     print(sample['scan_id'])
+    #     # exit()
+    #     print(sample['insturction'])
+    #     print(len(sample['trajectory']),' : ',len(sample['trajectory_true']))
+    #     print()
+    #     if len(sample['trajectory']) == len(sample['trajectory_true']):
             
-            for idx in range(len(sample['trajectory'])):
-                print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
-        else:
-            for idx in range(min(len(sample['trajectory']),len(sample['trajectory_true']))):
-                print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
-        print()
-        break
+    #         for idx in range(len(sample['trajectory'])):
+    #             print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
+    #     else:
+    #         for idx in range(min(len(sample['trajectory']),len(sample['trajectory_true']))):
+    #             print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
+    #     print()
+    #     break
+
+    print(sample['instr_id'])
+    print(sample['scan_id'])
+    # exit()
+    print(sample['insturction'])
+    print(len(sample['trajectory']),' : ',len(sample['trajectory_true']))
+    print()
+    if len(sample['trajectory']) == len(sample['trajectory_true']):
+        
+        for idx in range(len(sample['trajectory'])):
+            print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
+    else:
+        for idx in range(min(len(sample['trajectory']),len(sample['trajectory_true']))):
+            print(sample['trajectory'][idx][0],' : ',sample['trajectory_true'][idx])
+    print()
+
 # with open('/home/zhhz/sxu/fw_project/VLN_bert/result/wf_test_predict_path.json','r') as f:
 #     predict_sample = json.load(f)
 

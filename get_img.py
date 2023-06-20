@@ -104,7 +104,11 @@ if __name__ == '__main__':
         curview=get_image_each_viewpoint(vid, scanid, instr_id, viewpointid, mod)
         viewlis.append(curview)
         if vid != vidlis[-1]:
-            viewlis.append(np.zeros((curview.shape[0],20,curview.shape[2])))
+            bar = np.zeros((curview.shape[0],20,curview.shape[2]))
+            for Xidx in range(len(bar)):
+                for Yidx in range(20):
+                    bar[Xidx][Yidx][1] = 255
+            viewlis.append(bar)
 
     if is_stand_heading:
         if mod == 'pred':

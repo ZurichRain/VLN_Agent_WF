@@ -124,8 +124,8 @@ class R2RBatch():
                         try:
                             new_item = dict(item)
                             new_item['instr_id'] = '%s_%d' % (item['path_id'], j)
-                            # if new_item['instr_id'] == '1326_2':
-                            #     instr = 'Walk past the pool table and walk into the room with the chimney. With the chimney on your right walk down the catwalk and stop at the end before you enter the next room.'
+                            if new_item['instr_id'] == '6822_2':
+                                instr = 'Step forward, make a hard right, walk pass the bed and turn right. Wait in the doorway. '
                                 
                             new_item['instructions'] = instr
 
@@ -150,17 +150,17 @@ class R2RBatch():
         self.seed = seed
         random.seed(self.seed)
         random.shuffle(self.data)
-        # ''' wf add code '''
-        # sample_example = None
-        # for d in self.data:
-        #     if d['instr_id'] == '1326_2':
-        #         sample_example = d
-        #         break
-        # print(sample_example)
-        # assert sample_example is not None
-        # self.data=[sample_example]
-        # self.scans =set([sample_example['scan']])
-        # ''' wf add code '''
+        ''' wf add code '''
+        sample_example = None
+        for d in self.data:
+            if d['instr_id'] == '6822_2':
+                sample_example = d
+                break
+        print(sample_example)
+        assert sample_example is not None
+        self.data=[sample_example]
+        self.scans =set([sample_example['scan']])
+        ''' wf add code '''
 
         self.ix = 0
         self.batch_size = batch_size

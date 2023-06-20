@@ -43,8 +43,8 @@ error360EnvPath = './ErrorAnalysis/VLN_Bert/UnseenExample'
 # print(len(error_predict_sample))
 # exit()
 
-scan_id = 'zsNo4HB9uLZ'
-instr_id = '4909_0'
+scan_id = 'QUCTc6BB5sX'
+instr_id = '5820_0'
 # viewpointid = '1320ad480d434d1d8d6d7304dc5f7854'
 
 sample = None 
