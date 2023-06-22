@@ -80,6 +80,7 @@ with open(MetaFile,'w') as f:
 
 pred_heading_lis = [curs[1] for curs in sample['trajectory']]
 gold_heading_lis = sample['gold_heading_lis'][1:]
+# gold_heading_lis = [5.759586531581287, 4.71238898038469, 0.0, 0.0, 0.0, 1.5707963267948966]
 
 
 for idx, viewpoint in enumerate(sample['trajectory']):

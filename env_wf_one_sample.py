@@ -124,8 +124,8 @@ class R2RBatch():
                         try:
                             new_item = dict(item)
                             new_item['instr_id'] = '%s_%d' % (item['path_id'], j)
-                            if new_item['instr_id'] == '6822_2':
-                                instr = 'Step forward, make a hard right, walk pass the bed and turn right. Wait in the doorway. '
+                            # if new_item['instr_id'] == '6822_2':
+                            #     instr = 'Step forward, make a hard right, walk pass the bed and turn right. Wait in the doorway. '
                                 
                             new_item['instructions'] = instr
 
@@ -153,7 +153,7 @@ class R2RBatch():
         ''' wf add code '''
         sample_example = None
         for d in self.data:
-            if d['instr_id'] == '6822_2':
+            if d['instr_id'] == '5820_0':
                 sample_example = d
                 break
         print(sample_example)
